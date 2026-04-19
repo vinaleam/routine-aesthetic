@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require('electron');
-const db = require('./database/database');
 const { registerHandlers } = require('./ipc/handlers');
 const { createMainWindow } = require('./windows/mainWindow');
 
@@ -14,14 +13,14 @@ app.on('web-contents-created', (_, contents) => {
 });
 
 app.whenReady().then(() => {
-  db.init();
+  (require('./database/database')).init();
   registerHandlers();
   createMainWindow();
 });
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    db.close();
+    (require('./database/database')).close();
     app.quit();
   }
 });
@@ -33,5 +32,5 @@ app.on('activate', () => {
 });
 
 app.on('before-quit', () => {
-  db.close();
+  (require('./database/database')).close();
 });
